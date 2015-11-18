@@ -1,10 +1,7 @@
-= Audio Library for Arduino Zero=
+= Audio Library for Arduino Zero =
 
 The Zerodio library enables an Arduino Zero board to play back 8bit .wav files 
 from a storage device like an SD card, without blocking program execution.
-
-For more information about this library please visit us at
-http://arduino.cc/en/Reference/Audio
 
 == License ==
 
