@@ -7,6 +7,12 @@
   Sample rate tested : 22050
   use Audacity to convert your audio file
 
+  !!!! Don't connect speaker directly to the DAC !!!!
+  See here for schematics : https://www.arduino.cc/en/Tutorial/SimpleAudioPlayerZero
+
+  The audio file should play right after the Arduino Zero boot,
+  and each time the character 'p' is received on serial port
+  
   Author : AloyseTech
 */
 
