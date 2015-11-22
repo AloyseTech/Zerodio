@@ -3,6 +3,8 @@
 The Zerodio library enables an Arduino Zero board to play back 8bit .wav files 
 from a storage device like an SD card, without blocking program execution.
 
+=== Incompatible with Tone library on arduino Zero : both use Timer Counter TC5 ===
+
 == License ==
 
 Copyright (c) AloyseTech. All right reserved.
