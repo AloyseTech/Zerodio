@@ -10,6 +10,7 @@
  * published by the Free Software Foundation.
  */
 
+#include "arduino.h"
 #include "zerodio.h"
 #include <SD.h>
 #include <SPI.h>
@@ -23,20 +24,23 @@ uint32_t __NumberOfSamples; // Number of samples to read in block
 uint8_t *__WavSamples;
 File __audioFile;
 int __Volume;
-
+uint32_t fileSize=0;
+uint32_t elapsedBytes=0;
+uint32_t srate=0;
 
 void ZerodioClass::begin(uint32_t sampleRate) {
 	
 	__audioFileReady = false;
 	__SampleIndex = 0;					//in order to start from the beginning
 	__NumberOfSamples = 256;            //samples to read to have a buffer
-	
+    srate=sampleRate;
 	/*Allocate the buffer where the samples are stored*/
 	__WavSamples = (uint8_t *) malloc(__NumberOfSamples * sizeof(uint8_t));
 	
 	/*Modules configuration */
   	dacConfigure();
 	tcConfigure(sampleRate);
+    
     
 }
 
@@ -52,6 +56,8 @@ void ZerodioClass::play(const char *fname) {
     if(__audioFileReady)
         __audioFile.close();
     __audioFile = SD.open(fname);
+    fileSize=__audioFile.size();
+    
     if(!__audioFile){
         end();
         return;
@@ -68,6 +74,26 @@ void ZerodioClass::play(const char *fname) {
     
     __audioFileReady = true;
     
+}
+
+uint32_t ZerodioClass::duration()
+{
+    if(__audioFileReady)
+        return (fileSize/srate);
+    return 0;
+}
+
+uint32_t ZerodioClass::remaining()
+{
+    if(__audioFileReady)
+        return ((fileSize-elapsedBytes)/srate);
+    return 0;
+}
+
+
+bool ZerodioClass::isPLaying()
+{
+    return __audioFileReady;
 }
 
 
@@ -174,7 +200,7 @@ void Audio_Handler (void)
         if (__SampleIndex < __NumberOfSamples - 1)
         {
             analogWrite(A0, __WavSamples[__SampleIndex++]);
-            
+            elapsedBytes++;
             // Clear the interrupt
             //TC5->COUNT16.INTFLAG.bit.MC0 = 1;
         }
@@ -187,6 +213,7 @@ void Audio_Handler (void)
     else if (__audioFileReady){
         __audioFile.close();
         __audioFileReady = false;
+        elapsedBytes=0;
         //tc reset
         //TC5->COUNT16.CTRLA.reg = TC_CTRLA_SWRST;
         //while (TC5->COUNT16.STATUS.reg & TC_STATUS_SYNCBUSY);

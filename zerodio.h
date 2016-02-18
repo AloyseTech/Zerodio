@@ -27,6 +27,9 @@ public:
 	void begin(uint32_t sampleRate);
     void play(const char *fname) ;
 	void end();
+    bool isPlaying();
+    uint32_t duration();
+    uint32_t remaining();
 
 private:
 	void dacConfigure(void);
