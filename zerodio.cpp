@@ -91,7 +91,7 @@ uint32_t ZerodioClass::remaining()
 }
 
 
-bool ZerodioClass::isPLaying()
+bool ZerodioClass::isPlaying()
 {
     return __audioFileReady;
 }
